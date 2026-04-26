@@ -6,187 +6,58 @@
   box-sizing: border-box;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0a0e27;
-  color: #e4e4e7;
+  background: #050816;
+  color: #fafafa;
+  overflow-x: hidden;
+}
+
+body {
   min-height: 100vh;
 }
 
 #root {
   width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-.content-wrapper {
-  position: relative;
-  z-index: 1;
-  padding-top: 70px;
+  min-height: 100vh;
 }
 
 canvas {
   display: block;
 }
 
-.header {
-  padding: 2rem 2.5rem;
-  border-bottom: 1px solid #27272a;
+button {
+  font-family: inherit;
 }
 
-.header h1 {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #08091e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.2);
+}
+
+/* Selection */
+::selection {
+  background: rgba(167, 139, 250, 0.3);
   color: #fafafa;
-}
-
-.header p {
-  color: #71717a;
-  font-size: 0.95rem;
-}
-
-.main {
-  padding: 3rem 2.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-}
-
-.metric-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid #27272a;
-  border-radius: 0.75rem;
-  padding: 1.75rem;
-  transition: all 0.3s ease;
-}
-
-.metric-card:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: #3f3f46;
-}
-
-.metric-label {
-  font-size: 0.9rem;
-  color: #71717a;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.metric-value {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #fafafa;
-  font-variant-numeric: tabular-nums;
-}
-
-.metric-unit {
-  font-size: 1rem;
-  color: #71717a;
-  margin-left: 0.25rem;
-}
-
-.table-section {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid #27272a;
-  border-radius: 0.75rem;
-  overflow: hidden;
-}
-
-.table-header {
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid #27272a;
-}
-
-.table-header h2 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #fafafa;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th {
-  padding: 1rem 2rem;
-  text-align: left;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #71717a;
-  background: rgba(255, 255, 255, 0.01);
-  border-bottom: 1px solid #27272a;
-}
-
-td {
-  padding: 1.25rem 2rem;
-  border-bottom: 1px solid #27272a;
-  font-size: 0.95rem;
-}
-
-tr:hover {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.model-name {
-  color: #fafafa;
-  font-weight: 500;
-}
-
-.cost {
-  color: #fafafa;
-  font-variant-numeric: tabular-nums;
-  font-weight: 500;
-}
-
-.percentage {
-  color: #71717a;
-  font-size: 0.85rem;
-}
-
-@media (max-width: 768px) {
-  .header {
-    padding: 1.5rem;
-  }
-
-  .header h1 {
-    font-size: 1.5rem;
-  }
-
-  .main {
-    padding: 1.5rem;
-  }
-
-  .metrics-grid {
-    grid-template-columns: 1fr;
-  }
-
-  td, th {
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
-  }
-
-  .metric-value {
-    font-size: 1.75rem;
-  }
 }
