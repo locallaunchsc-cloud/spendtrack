@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import BackgroundScene from '../components/BackgroundScene';
+import Navbar from '../components/Navbar';
 import '../styles/landing.css';
 
 export default function Landing() {
@@ -49,6 +50,7 @@ export default function Landing() {
 
   return (
     <div className="landing">
+      <Navbar page="landing" />
       <div className="landing-background">
         <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
           <BackgroundScene />
@@ -64,7 +66,7 @@ export default function Landing() {
         >
           <h1>SpendTrack</h1>
           <p className="subtitle">
-            Know exactly what your AI agents cost. In real-time.
+            Stop burning money on AI. See exactly what every agent costs.
           </p>
         </motion.header>
 
@@ -75,16 +77,17 @@ export default function Landing() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <div className="hero-content">
-            <h2>The problem</h2>
+            <h2>Your AI stack is costing you.</h2>
             <p>
-              You're running 5 AI agents. Claude, GPT-4, Bedrock. But you have no idea how much they cost.
-              Token counts are scattered across dashboards. Budget visibility = zero. You're flying blind.
+              5 AI agents. 3 different APIs. No visibility. Your Claude agent costs $500/mo, GPT-4 costs $800/mo,
+              Bedrock costs $1200/mo. But you don't know which one is burning cash or why. Token counts are scattered
+              across 5 different dashboards. Budget visibility = zero.
             </p>
 
-            <h2 style={{ marginTop: '2rem' }}>The solution</h2>
+            <h2 style={{ marginTop: '2rem' }}>One line of code. Full visibility.</h2>
             <p>
-              SpendTrack wraps your API calls and logs spending. One dashboard. One place. Zero keys stored.
-              Open source. Maximum trust.
+              Wrap your API client with SpendTrack. That's it. Real-time metrics. One dashboard. See spending by model,
+              by project, by agent. Optimize ruthlessly. We never see your keys—only metrics. Open source. Fully transparent.
             </p>
           </div>
         </motion.section>
@@ -113,15 +116,42 @@ export default function Landing() {
         </motion.section>
 
         <motion.section
+          className="getting-started"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-100px' }}
+        >
+          <h2>Get started in 2 minutes</h2>
+          <div className="steps-grid">
+            <motion.div className="step" variants={itemVariants}>
+              <div className="step-number">1</div>
+              <h3>Install SDK</h3>
+              <p><code>npm install @spendtrack/sdk</code></p>
+            </motion.div>
+            <motion.div className="step" variants={itemVariants}>
+              <div className="step-number">2</div>
+              <h3>Wrap Your Client</h3>
+              <p><code>tracker.wrap(client)</code></p>
+            </motion.div>
+            <motion.div className="step" variants={itemVariants}>
+              <div className="step-number">3</div>
+              <h3>View Dashboard</h3>
+              <p>Real-time spending metrics</p>
+            </motion.div>
+          </div>
+        </motion.section>
+
+        <motion.section
           className="cta-section"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2>Ready to track your AI spending?</h2>
+          <h2>Stop guessing. Start tracking.</h2>
           <p className="cta-subtitle">
-            Get started in 2 minutes. No credit card required.
+            Open source, fully transparent. Zero API keys stored.
           </p>
           <motion.button
             onClick={() => {

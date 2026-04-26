@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion } from 'framer-motion';
 import BackgroundScene from './components/BackgroundScene';
+import Navbar from './components/Navbar';
 import Landing from './pages/Landing';
 
 interface Metrics {
@@ -82,6 +83,7 @@ function App() {
 
   return (
     <div id="root">
+      <Navbar page="dashboard" />
       <div className="background">
         <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
           <BackgroundScene />
