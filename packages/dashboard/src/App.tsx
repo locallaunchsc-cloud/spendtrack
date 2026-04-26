@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/react';
 import BackgroundScene from './components/BackgroundScene';
 
 interface Metrics {
@@ -119,6 +120,7 @@ function App() {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 }
