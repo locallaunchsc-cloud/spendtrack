@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion } from 'framer-motion';
 import BackgroundScene from './components/BackgroundScene';
+import Landing from './pages/Landing';
 
 interface Metrics {
   projectId: string;
@@ -42,6 +43,16 @@ const MetricCard = ({ label, value, unit }: { label: string; value: number | str
 function App() {
   const [metrics, setMetrics] = useState<Metrics>(mockData);
   const [projectId] = useState(new URLSearchParams(window.location.search).get('project') || 'my-app');
+  const [page, setPage] = useState(window.location.pathname === '/dashboard' ? 'dashboard' : 'landing');
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setPage(window.location.pathname === '/dashboard' ? 'dashboard' : 'landing');
+    };
+
+    window.addEventListener('popstate', handleRouteChange);
+    return () => window.removeEventListener('popstate', handleRouteChange);
+  }, []);
 
   useEffect(() => {
     const fetchMetrics = async () => {
@@ -55,10 +66,16 @@ function App() {
       }
     };
 
-    fetchMetrics();
-    const interval = setInterval(fetchMetrics, 30000);
-    return () => clearInterval(interval);
-  }, [projectId]);
+    if (page === 'dashboard') {
+      fetchMetrics();
+      const interval = setInterval(fetchMetrics, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [projectId, page]);
+
+  if (page === 'landing') {
+    return <Landing />;
+  }
 
   const sortedModels = Object.entries(metrics.costByModel).sort((a, b) => b[1] - a[1]);
   const totalByModel = sortedModels.reduce((sum, [_, cost]) => sum + cost, 0);
