@@ -6,10 +6,13 @@
   "workspaces": [
     "packages/sdk",
     "packages/api",
+    "packages/dashboard",
     "shared"
   ],
   "scripts": {
     "dev": "npm run dev --workspaces",
+    "dev:dashboard": "npm run dev -w packages/dashboard",
+    "dev:api": "npm run dev -w packages/api",
     "build": "npm run build --workspaces",
     "test": "npm test --workspaces"
   }
