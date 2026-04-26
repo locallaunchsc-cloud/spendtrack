@@ -1,0 +1,16 @@
+{
+  "name": "spendtrack",
+  "version": "0.1.0",
+  "description": "Open source AI spending tracker",
+  "private": true,
+  "workspaces": [
+    "packages/sdk",
+    "packages/api",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "test": "npm test --workspaces"
+  }
+}

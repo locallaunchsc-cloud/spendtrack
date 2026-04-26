@@ -1,0 +1,20 @@
+{
+  "name": "@spendtrack/api",
+  "version": "0.1.0",
+  "description": "Backend API for SpendTrack",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.6",
+    "@types/express": "^4.17.21",
+    "tsx": "^4.7.0"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@spendtrack/shared",
+  "version": "0.1.0",
+  "description": "Shared types",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
