@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion } from 'framer-motion';
-import AdvancedSpendingChart from './components/AdvancedSpendingChart';
-import ParticleField from './components/ParticleField';
-import AnimatedMetrics from './components/AnimatedMetrics';
-import TimelineChart from './components/TimelineChart';
+import BackgroundScene from './components/BackgroundScene';
 
 interface Metrics {
   projectId: string;
@@ -27,103 +24,101 @@ const mockData: Metrics = {
   },
 };
 
+const MetricCard = ({ label, value, unit }: { label: string; value: number | string; unit?: string }) => (
+  <motion.div
+    className="metric-card"
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4 }}
+  >
+    <div className="metric-label">{label}</div>
+    <div className="metric-value">
+      {typeof value === 'number' ? value.toLocaleString('en-US', { maximumFractionDigits: 2 }) : value}
+      {unit && <span className="metric-unit">{unit}</span>}
+    </div>
+  </motion.div>
+);
+
 export default function App() {
   const [metrics, setMetrics] = useState<Metrics>(mockData);
   const [projectId] = useState(new URLSearchParams(window.location.search).get('project') || 'my-app');
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchMetrics = async () => {
-      setLoading(true);
       try {
         const res = await fetch(`/api/projects/${projectId}/metrics`);
         if (res.ok) {
           setMetrics(await res.json());
         }
-      } catch (err) {
-        console.log('Using mock data (API not available)');
-      } finally {
-        setLoading(false);
+      } catch {
+        // Use mock data
       }
     };
 
     fetchMetrics();
-    const interval = setInterval(fetchMetrics, 30000); // Refresh every 30s
+    const interval = setInterval(fetchMetrics, 30000);
     return () => clearInterval(interval);
   }, [projectId]);
 
+  const sortedModels = Object.entries(metrics.costByModel).sort((a, b) => b[1] - a[1]);
+  const totalByModel = sortedModels.reduce((sum, [_, cost]) => sum + cost, 0);
+
   return (
-    <motion.div
-      className="container"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-    >
-      <motion.header
-        className="header"
-        initial={{ y: -30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-      >
-        <h1>✨ SpendTrack</h1>
-        <p>Project: <strong>{projectId}</strong>{loading && ' (syncing...)'}</p>
-      </motion.header>
-
-      <div className="content">
-        <motion.div
-          className="card"
-          initial={{ x: -30, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <h2>💰 Spending by Model</h2>
-          <div className="chart-container">
-            <Canvas camera={{ position: [0, 0, 12], fov: 50 }}>
-              <AdvancedSpendingChart data={metrics.costByModel} />
-            </Canvas>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="card"
-          initial={{ x: 30, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          <h2>📊 This Month</h2>
-          <AnimatedMetrics metrics={metrics} />
-        </motion.div>
-
-        <motion.div
-          className="card"
-          initial={{ x: -30, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          style={{ gridColumn: '1 / -1' }}
-        >
-          <h2>📈 Spending Timeline</h2>
-          <div style={{ height: '300px' }}>
-            <Canvas camera={{ position: [0, 0, 12] }}>
-              <TimelineChart />
-            </Canvas>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="card"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          style={{ gridColumn: '1 / -1', height: '200px' }}
-        >
-          <h2>🌌 Ambient Field</h2>
-          <Canvas camera={{ position: [0, 0, 15] }}>
-            <ParticleField />
-            <ambientLight intensity={0.3} />
-            <pointLight position={[10, 10, 10]} intensity={0.5} />
-          </Canvas>
-        </motion.div>
+    <div id="root">
+      <div className="background">
+        <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
+          <BackgroundScene />
+        </Canvas>
       </div>
-    </motion.div>
+
+      <div className="content-wrapper">
+        <motion.header
+          className="header"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1>SpendTrack</h1>
+          <p>Project: {projectId}</p>
+        </motion.header>
+
+        <div className="main">
+          <div className="metrics-grid">
+            <MetricCard label="Total Spend" value={metrics.totalCost} unit="$" />
+            <MetricCard label="API Calls" value={metrics.requestCount} />
+            <MetricCard label="Tokens Used" value={metrics.totalTokens} />
+            <MetricCard label="Active Models" value={Object.keys(metrics.costByModel).length} />
+          </div>
+
+          <div className="table-section">
+            <div className="table-header">
+              <h2>Spending by Model</h2>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th style={{ textAlign: 'right' }}>Cost</th>
+                  <th style={{ textAlign: 'right' }}>Share</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedModels.map(([model, cost]) => (
+                  <tr key={model}>
+                    <td className="model-name">{model}</td>
+                    <td className="cost" style={{ textAlign: 'right' }}>
+                      ${cost.toFixed(2)}
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
+                      <span className="percentage">{((cost / totalByModel) * 100).toFixed(1)}%</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
