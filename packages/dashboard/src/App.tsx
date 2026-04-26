@@ -39,7 +39,7 @@ const MetricCard = ({ label, value, unit }: { label: string; value: number | str
   </motion.div>
 );
 
-export default function App() {
+function App() {
   const [metrics, setMetrics] = useState<Metrics>(mockData);
   const [projectId] = useState(new URLSearchParams(window.location.search).get('project') || 'my-app');
 
@@ -122,3 +122,5 @@ export default function App() {
     </div>
   );
 }
+
+export default App;
