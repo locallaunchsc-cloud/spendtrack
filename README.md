@@ -1,14 +1,32 @@
 # SpendTrack
 
-Open source AI spending tracker. Zero API keys. Maximum trust.
+**Observability for AI spend.** Track LLM API costs, token usage, and model performance across your projects in real time.
 
-## What it does
+> ⚠️ **Pre-launch.** Landing page and dashboard UI are live. SDK and ingestion API are in active development. Star the repo to follow along.
 
-Wraps your AI API calls (Claude, OpenAI, Bedrock) and tracks spending automatically. No keys stored, no request bodies logged, just metrics.
+---
 
-## Getting started
+## Why
 
-### SDK
+Most teams shipping AI features have no idea what they're spending until the invoice hits.
+
+One prompt change. 3x token usage. Nobody notices for 18 days.
+
+Datadog wasn't built for $0.003-per-call economics. SpendTrack is.
+
+## What you get
+
+- **Live spend tracking** — per model, per project, per feature
+- **Token-level attribution** — know exactly which call burned the budget
+- **Budget alerts** — get pinged before you blow the month, not after
+- **Anomaly detection** — catch prompt regressions that 4x token usage overnight
+- **Multi-provider** — Anthropic, OpenAI, Bedrock, and more
+
+## How it works
+
+The SDK wraps your LLM client locally. It reads response objects (which already include token counts) and ships only **counts + cost metadata** to SpendTrack.
+
+**Your API keys never leave your servers.** We never see prompts, completions, or keys.
 
 ```ts
 import { SpendTrack } from '@spendtrack/sdk';
@@ -17,51 +35,60 @@ import Anthropic from '@anthropic-ai/sdk';
 const tracker = new SpendTrack({ projectId: 'my-app' });
 const client = tracker.wrap(new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY }));
 
-// Use normally
 const msg = await client.messages.create({
   model: 'claude-opus-4-7',
   max_tokens: 1024,
   messages: [{ role: 'user', content: 'Hello' }],
 });
-// Spending is automatically tracked
+// Spend is automatically tracked
 ```
 
-### Dashboard
+**What we see:** token counts, model used, calculated cost, timestamp.
+**What we never see:** API keys, prompts, completions, user data.
 
-Visit [spendtrack.dev](https://spendtrack.dev) and paste your project ID to see your metrics.
+## Status
 
-## How it works
+| Component       | Status                  |
+| --------------- | ----------------------- |
+| Landing page    | ✅ Live                  |
+| Dashboard UI    | ✅ Live (mock data)      |
+| SDK (Node/TS)   | 🛠 In progress           |
+| Ingestion API   | 🛠 In progress           |
+| Auth & billing  | ⏳ Planned               |
+| Python SDK      | ⏳ Planned               |
 
-1. SDK wraps API calls
-2. Extracts: model, tokens, cost
-3. Sends to backend (non-blocking, metrics-only)
-4. You see it in the dashboard
+## Stack
 
-**What we never see:**
-- API keys
-- Request/response content
-- User data
-- Anything sensitive
+React + TypeScript + Vite · Framer Motion · @react-three/fiber · npm workspaces monorepo
 
-**What we see:**
-- Token counts
-- Model used
-- Calculated cost
-- Timestamp
+## Run locally
 
-## Open source
-
-All code is public. Review the SDK code before installing. No closed-source magic.
+```bash
+npm install
+npm run dev:dashboard
+```
 
 ## Roadmap
 
+- [ ] Node SDK v0.1 (Anthropic wrapper)
 - [ ] OpenAI wrapper
-- [ ] Bedrock wrapper  
-- [ ] Dashboard UI
-- [ ] Team spend visibility
-- [ ] Cost optimization recommendations
+- [ ] Bedrock wrapper
+- [ ] Ingestion API
+- [ ] Real-time dashboard wiring
+- [ ] Auth (magic link)
+- [ ] Stripe billing
+- [ ] Python SDK
 - [ ] Self-hosted backend option
+- [ ] Slack/Discord alerts
 
 ## Contributing
 
-Issues and PRs welcome.
+Issues and PRs welcome. This is built in the open — review the SDK code before installing. No closed-source magic.
+
+## Early access
+
+Pre-launch. If you're spending serious money on LLM APIs and want in early, open an issue.
+
+## License
+
+MIT — see [LICENSE](./LICENSE)
