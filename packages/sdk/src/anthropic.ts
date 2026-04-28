@@ -1,4 +1,4 @@
-import type { UsageEvent } from '@spendtrack/shared';
+import type { UsageEvent } from './types';
 import { ANTHROPIC_PRICING, computeCost, findPrice } from './pricing';
 import type { Transport } from './transport';
 

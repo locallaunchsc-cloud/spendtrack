@@ -1,4 +1,4 @@
-import type { UsageEvent } from '@spendtrack/shared';
+import type { UsageEvent } from './types';
 import { OPENAI_PRICING, computeCost, findPrice } from './pricing';
 import type { Transport } from './transport';
 

@@ -18,9 +18,6 @@
     "url": "https://github.com/locallaunchsc-cloud/spendtrack.git",
     "directory": "packages/sdk"
   },
-  "dependencies": {
-    "@spendtrack/shared": "0.1.0"
-  },
   "peerDependencies": {
     "@anthropic-ai/sdk": ">=0.24.0",
     "openai": ">=4.0.0"

@@ -1,4 +1,4 @@
-import type { UsageEvent } from '@spendtrack/shared';
+import type { UsageEvent } from './types';
 
 export interface Transport {
   send(event: UsageEvent): void;

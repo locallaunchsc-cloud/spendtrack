@@ -15,7 +15,7 @@ import { HttpTransport, MemoryTransport, type Transport } from './transport';
 export { wrapAnthropic, wrapOpenAI, HttpTransport, MemoryTransport };
 export type { Transport };
 export * from './pricing';
-export type { UsageEvent, ProjectMetrics, Provider } from '@spendtrack/shared';
+export type { UsageEvent, Provider } from './types';
 
 export interface SpendTrackConfig {
   projectId: string;
