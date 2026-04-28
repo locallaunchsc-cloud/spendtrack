@@ -1,78 +1,71 @@
-// SpendTrack SDK - wraps API calls and tracks spending
+// SpendTrack SDK — track AI spend without leaking keys, prompts, or completions.
+//
+// Usage:
+//   import { SpendTrack } from '@spendtrack/sdk';
+//   import Anthropic from '@anthropic-ai/sdk';
+//
+//   const st = new SpendTrack({ projectId: 'my-app' });
+//   const client = st.wrapAnthropic(new Anthropic());
+//   // ...use client normally; spend is reported automatically.
 
-export * from './anthropic';
-export * from './openai';
+import { wrapAnthropic } from './anthropic';
+import { wrapOpenAI } from './openai';
+import { HttpTransport, MemoryTransport, type Transport } from './transport';
+
+export { wrapAnthropic, wrapOpenAI, HttpTransport, MemoryTransport };
+export type { Transport };
+export * from './pricing';
+export type { UsageEvent, ProjectMetrics, Provider } from '@spendtrack/shared';
 
 export interface SpendTrackConfig {
   projectId: string;
-  serviceUrl?: string; // defaults to spendtrack.dev
+  /** Ingestion endpoint. Defaults to https://api.spendtrack.dev. */
+  serviceUrl?: string;
+  /** Optional API key for the SpendTrack ingestion API. */
+  apiKey?: string;
+  /** Bring-your-own transport (e.g. MemoryTransport for tests). */
+  transport?: Transport;
+  /** Optional default tag applied to every reported event. */
+  tag?: string;
+  /** Called on transport errors. Default: silent. */
+  onError?: (err: unknown) => void;
 }
 
 export class SpendTrack {
-  private projectId: string;
-  private serviceUrl: string;
+  readonly projectId: string;
+  readonly transport: Transport;
+  private tag?: string;
 
   constructor(config: SpendTrackConfig) {
     this.projectId = config.projectId;
-    this.serviceUrl = config.serviceUrl || 'https://api.spendtrack.dev';
+    this.tag = config.tag;
+    this.transport =
+      config.transport ??
+      new HttpTransport({
+        serviceUrl: config.serviceUrl ?? 'https://api.spendtrack.dev',
+        apiKey: config.apiKey,
+        onError: config.onError,
+      });
   }
 
-  private async logUsage(model: string, inputTokens: number, outputTokens: number) {
-    const cost = this.calculateCost(model, inputTokens, outputTokens);
-    
-    // Send metrics to backend (non-blocking)
-    fetch(`${this.serviceUrl}/metrics`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        timestamp: new Date(),
-        projectId: this.projectId,
-        model,
-        inputTokens,
-        outputTokens,
-        cost,
-      }),
-    }).catch(() => {}); // Silently fail if backend is down
-  }
-
-  private calculateCost(model: string, inputTokens: number, outputTokens: number): number {
-    // Pricing as of Apr 2026 (update as needed)
-    const pricing: Record<string, { input: number; output: number }> = {
-      'claude-opus-4-7': { input: 0.015, output: 0.075 },
-      'claude-sonnet-4-6': { input: 0.003, output: 0.015 },
-      'claude-haiku-4-5-20251001': { input: 0.0008, output: 0.004 },
-      'gpt-4': { input: 0.03, output: 0.06 },
-      'gpt-4o': { input: 0.005, output: 0.015 },
-    };
-
-    const price = pricing[model] || { input: 0, output: 0 };
-    return (inputTokens * price.input + outputTokens * price.output) / 1000;
-  }
-
-  wrap(client: any) {
-    // Wraps any API client to track usage
-    return new Proxy(client, {
-      get: (target, prop) => {
-        if (prop === 'messages' && target.messages?.create) {
-          return new Proxy(target.messages, {
-            get: (msgTarget, msgProp) => {
-              if (msgProp === 'create') {
-                return async (params: any) => {
-                  const response = await msgTarget.create(params);
-                  this.logUsage(
-                    response.model,
-                    response.usage.input_tokens,
-                    response.usage.output_tokens
-                  );
-                  return response;
-                };
-              }
-              return msgTarget[msgProp];
-            },
-          });
-        }
-        return target[prop];
-      },
+  wrapAnthropic<T extends Parameters<typeof wrapAnthropic>[0]>(client: T): T {
+    return wrapAnthropic(client, {
+      projectId: this.projectId,
+      transport: this.transport,
+      tag: this.tag,
     });
+  }
+
+  wrapOpenAI<T extends Parameters<typeof wrapOpenAI>[0]>(client: T): T {
+    return wrapOpenAI(client, {
+      projectId: this.projectId,
+      transport: this.transport,
+      tag: this.tag,
+    });
+  }
+
+  /** Wait for in-flight events to flush. Call before process exit. */
+  flush(): Promise<void> {
+    return this.transport.flush();
   }
 }

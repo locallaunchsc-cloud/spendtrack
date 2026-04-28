@@ -24,5 +24,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build shared
+        run: npm run build -w shared
+
+      - name: Build SDK
+        run: npm run build -w packages/sdk
+
+      - name: Test SDK
+        run: npm run test -w packages/sdk
+
       - name: Build dashboard
         run: npm run build -w packages/dashboard

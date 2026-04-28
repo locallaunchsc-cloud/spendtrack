@@ -1,19 +1,37 @@
 {
   "name": "@spendtrack/sdk",
   "version": "0.1.0",
-  "description": "Open source SDK for tracking AI API spending",
+  "description": "Track AI API spend without leaking keys, prompts, or completions.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist", "README.md"],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "jest"
+    "build": "tsc -b",
+    "dev": "tsc -b --watch",
+    "test": "tsx src/anthropic.test.ts",
+    "clean": "rimraf dist"
+  },
+  "keywords": ["ai", "llm", "observability", "anthropic", "openai", "claude", "gpt", "cost", "tracking"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/locallaunchsc-cloud/spendtrack.git",
+    "directory": "packages/sdk"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.24.0"
+    "@spendtrack/shared": "0.1.0"
+  },
+  "peerDependencies": {
+    "@anthropic-ai/sdk": ">=0.24.0",
+    "openai": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@anthropic-ai/sdk": { "optional": true },
+    "openai": { "optional": true }
   },
   "devDependencies": {
     "typescript": "^5.3.3",
+    "tsx": "^4.7.0",
     "@types/node": "^20.10.6"
   }
 }
