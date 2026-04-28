@@ -33,5 +33,11 @@ jobs:
       - name: Test SDK
         run: npm run test -w packages/sdk
 
+      - name: Build API
+        run: npm run build -w packages/api
+
+      - name: Test API
+        run: npm run test -w packages/api
+
       - name: Build dashboard
         run: npm run build -w packages/dashboard
